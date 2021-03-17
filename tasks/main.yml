@@ -1,0 +1,31 @@
+---
+    - name: Download rpm file
+      get_url:
+        url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+        dest: /tmp/mysql-community-release-el7-5.noarch.rpm
+
+    - name: Install rpm file
+      yum:
+        name: /tmp/mysql-community-release-el7-5.noarch.rpm
+        state: present
+
+    - name: Install MySQL server
+      apt: name=mysql-server state=present
+
+    - name: Start MySQL database
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Create MySQL database
+      mysql_db: name={{ db_name }} state=present
+
+    - name: Create MySQL user
+      mysql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_user_password }}"
+        priv: '*.*:ALL'
+        state: present
+        host: '%'
+# tasks file for mysql_db
